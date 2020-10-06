@@ -1,0 +1,331 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock title %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block style %}
+    {% endblock %}
+
+    <link rel="shortcut icon" type="image/png" href="/static/icons/favicon.ico">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+<!--===============================================================================================-->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+
+<!--===============================================================================================-->
+    <script>hljs.initHighlightingOnLoad();</script>
+<!--===============================================================================================-->
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+<!--===============================================================================================-->
+    <script src="https://kit.fontawesome.com/97f7705f71.js" crossorigin="anonymous"></script>
+<!--===============================================================================================-->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/open-iconic-bootstrap.min.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/animate.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/magnific-popup.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/aos.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+<!--===============================================================================================-->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<!--===============================================================================================-->
+    <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5VCWWWDbAmpr8s_6ACHl2Z8vAm1TGhqs&callback=initMap&libraries=&v=weekly"
+            defer
+    ></script>
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/flaticon.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/icomoon.css">
+<!--===============================================================================================-->
+    <link rel="stylesheet" href="/static/css/style.css">
+<!--===============================================================================================-->
+    <style>
+        img {
+            max-width: 755px;
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar px-md-0 navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">Blue<i>Blog</i>.</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
+                aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="fa fa-bars"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item {% block homeactive %} {% endblock homeactive %}"><a href="/"
+                                                                                         class="nav-link">Home</a></li>
+                <li class="nav-item {% block blogactive %} {% endblock blogactive %}"><a href="{% url 'blog' %}"
+                                                                                         class="nav-link">Blog</a></li>
+                <li class="nav-item {% block contactactive %} {% endblock contactactive %}"><a
+                        href="{% url 'contact' %}" class="nav-link">Contact</a></li>
+                <li class="nav-item {% block aboutactive %} {% endblock aboutactive %}"><a href="{% url 'about' %}"
+                                                                                           class="nav-link">Team</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if request.user.profile.photo %}
+                                <img style="width: 25px; height: 25px; background-size:auto 100%;"
+                                     src="{{ request.user.profile.photo.url }}" alt="profile pic">
+                            {% else %}
+                                <img style="width: 25px; height: 25px; background-size:auto 100%;"
+                                     src="/static/img/img3.png"
+                                     alt="profile pic">
+                            {% endif %}
+                            Welcome {{ request.user }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'profile_edit' %}">Profile</a>
+                            {% if user.is_staff %}
+                                <a class="dropdown-item" href="{% url 'post_upload' %}">**Create a Post</a>
+                                <a class="dropdown-item" href="/admin" target="_blank">**Admin login</a>
+                                <a class="dropdown-item" href="{% url 'post_list' %}">**View your posts</a>
+                                <a class="dropdown-item" href="{% url 'excerpt' %}">**Contribute Excerpts</a>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        </div>
+                        {% else %}
+                    <li class="nav-item">
+
+                        <a class="nav-link {% block registeractive %} {% endblock registeractive %}"
+                           href="{% url 'register' %}">Sign
+                            up</a>
+                    </li>
+                    <li class="nav-item {% block loginactive %} {% endblock loginactive %}">
+                        <a href="{% url 'login' %}?next={% firstof request.path '/' %}" type="button"
+                           style="margin-top: 2.5px" class="btn btn bg-transparent nav-link">
+                            Sign in
+                        </a>
+                    </li>
+
+                {% endif %}
+                {#                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>#}
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- END nav -->
+{% block header %}
+{% endblock header %}
+{% for message in messages %}
+    {% if user.is_authenticated %}
+        <div style="position:relative; z-index: 10000" class="alert alert-primary alert-dismissible fade show"
+             role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    {% else %}
+        <div style="position:relative; z-index: 10000" class="alert alert-dark alert-dismissible fade show"
+             role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+
+{% block body %}
+
+{% endblock body %}
+
+
+<footer class="ftco-footer ftco-bg-dark ftco-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md">
+                <div class="ftco-footer-widget mb-4">
+                    <h2 class="logo"><a href="{% url 'home' %}">Blue<span>blog</span>.</a></h2>
+                    <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there
+                        live the blind texts.</p>
+                    <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+                        <li class="ftco-animate"><a href="https://github.com/Avihwr"><span style="color: deepskyblue"
+                                                                                           class="fa fa-github"></span></a>
+                        </li>
+                        <li class="ftco-animate"><a href="https://www.linkedin.com/in/avi-gupta-0284871b3/"><span
+                                style="color: deepskyblue"><i class="fa fa-linkedin" aria-hidden="true"></i></span></a>
+                        </li>
+                        <li class="ftco-animate"><a href="https://www.facebook.com/avi.gupta.9883/"><span
+                                style="color: deepskyblue" class="fa fa-facebook"></span></a></li>
+                        <li class="ftco-animate"><a href="https://www.instagram.com/aviguptaxx/"><span
+                                style="color: deepskyblue" class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="ftco-footer-widget mb-4">
+                    <h2 class="ftco-heading-2">Latest Post</h2>
+
+                    <div class="block-21 mb-4 d-flex">
+                        <a class="img mr-4 rounded"
+                           style="background-image: url({{ index1.image_url |default_if_none:'/static/img/900x300.png' }});"></a>
+                        <div class="text">
+                            <h3 class="heading"><a href="/posts/{{ index1.slug }}">{{ index1.title }}</a></h3>
+                            <div class="meta">
+                                <div><a href="/posts/{{ index1.slug }}"></span> {{ index1.time }}</a></div>
+                                <div><a href="/posts/{{ index1.slug }}"></span>by {{ index1.user.username }}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md">
+                <div class="ftco-footer-widget mb-4 ml-md-5">
+                    <h2 class="ftco-heading-2">Information</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="py-1 d-block"><span><i class="fa fa-angle-right"
+                                                                                     aria-hidden="true"></i></span> Home</a>
+                        </li>
+                        <li><a href="#" class="py-1 d-block"><span><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                            About</a>
+                        </li>
+                        <li><a href="{% url 'blog' %}" class="py-1 d-block"><span><i class="fa fa-angle-right"
+                                                                                     aria-hidden="true"></i></span>
+                            Articles</a></li>
+                        <li><a href="{% url 'contact' %}" class="py-1 d-block"><span><i class="fa fa-angle-right"
+                                                                                        aria-hidden="true"></i></span>
+                            Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="ftco-footer-widget mb-4">
+                    <h2 class="ftco-heading-2">Have a Questions?</h2>
+                    <div class="block-23 mb-3">
+                        <ul>
+                            <li><span class="fas fa-globe">  </span><span class="text">   Symbiosis International University, Lavale
+Pune, India</span>
+                            </li>
+                            <li><a href="#"><span><i class="fas fa-phone" aria-hidden="true"></i>  </span>   <span
+                                    class="text">   +91 7417216890</span></a></li>
+                            <li><a href="mailto:avihwr@gmail.com"><span class="fa fa-envelope"></span><span
+                                    class="text float-right">  avihwr@gmail.com</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+
+                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+                    All rights reserved | BlueBlog © 2020
+
+                    DESIGNED AND DEVELOPED BY<a href="https://colorlib.com" target="_blank"> AVI GUPTA IN DJANGO. WITH
+                        Colorlib </a>
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<!-- loader -->
+<div id="ftco-loader" class="show fullscreen">
+    <svg class="circular" width="48px" height="48px">
+        <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"></circle>
+        <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                stroke="#F96D00"></circle>
+    </svg>
+</div>
+<script>
+    "use strict";
+
+    // Note: This example requires that you consent to location sharing when
+    // prompted by your browser. If you see the error "The Geolocation service
+    // failed.", it means you probably did not give permission for the browser to
+    // locate you.
+    let map, infoWindow;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: {
+                lat: -34.397,
+                lng: 150.644,
+            },
+            zoom: 6,
+        });
+        infoWindow = new google.maps.InfoWindow(); // Try HTML5 geolocation.
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+                    infoWindow.setPosition(pos);
+                    infoWindow.setContent("Location found.");
+                    infoWindow.open(map);
+                    map.setCenter(pos);
+                },
+                () => {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                }
+            );
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(
+            browserHasGeolocation
+                ? "Error: The Geolocation service failed."
+                : "Error: Your browser doesn't support geolocation."
+        );
+        infoWindow.open(map);
+    }
+</script>
+
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery.easing.1.3.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.stellar.min.js"></script>
+<script src="/static/js/owl.carousel.min.js"></script>
+<script src="/static/js/jquery.magnific-popup.min.js"></script>
+<script src="/static/js/aos.js"></script>
+<script src="/static/js/jquery.animateNumber.min.js"></script>
+<script src="/static/js/scrollax.min.js"></script>
+{#<script src="/static/js/google-map.js"></script>#}
+<script src="/static/js/main.js"></script>
+
+</body>
+</html>

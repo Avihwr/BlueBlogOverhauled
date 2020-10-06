@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% block title %}BlueBlog | Upload{% endblock title %}
+{% block header %}
+    <div class="hero-wrap js-fullheight" style="background-image: url('/static/img/nature.jpg');"
+         data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start"
+             data-scrollax-parent="true">
+            <div class="col-md-12 ftco-animate">
+                <h2 class="subheading">Hello! Welcome {{ user.username }}</h2>
+                <h1 class="mb-4 mb-md-0" style="font-size: 450%">Here You Can View All Your Uploads</h1>
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="text">
+                            <div class="mouse">
+                                <a href="#" class="mouse-icon">
+                                    <div class="mouse-wheel"><span class="fa fa-arrow-down"></span></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock header %}
+{% block body %}
+    {% for post in posts %}
+
+            <div class="list">
+                <ul class="list-group">
+                    <li class="list-group-item">{{ post.title }} >>
+                        <a href="{% url "post_delete" slug=post.slug %}" class="btn btn-danger float-right mx-3">Delete
+                            &rarr;</a>
+                        <a href="/post_edit/{{ post.pk }}" class="btn btn-primary float-right">Edit &rarr;</a>
+                </ul>
+            </div>
+        {% empty %}
+            <h4 class="text-center">You dont have any posts right now <i class="far fa-frown-open"></i></h4>
+        <i class="fas fa-arrow-down fa-5x" style="margin-left: 715px; margin-top: 20px"></i>
+            <a href="/post_upload" class="btn btn-primary" style="margin-left: 690px; margin-top: 50px">Create one?</a>
+
+    {% endfor %}
+{% endblock body %}
+
+

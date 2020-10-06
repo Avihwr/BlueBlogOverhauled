@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% block title %}BlueBlog | Posts{% endblock title %}
+{% block blogactive %}active{% endblock blogactive %}
+{% block header %}
+    <section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('{{ Blog.image_url }}');"
+             data-stellar-background-ratio="0.5">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-center">
+                <div class="col-md-9 ftco-animate pb-5 text-center">
+                    <h1 class="display-1">{{ Blog.title }}</h1>
+                    <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'home' %}">Home <i
+                            class="fa fa-angle-right"></i></a></span> <span class="mr-2"><a href="{% url 'blog' %}">Blog <i
+                            class="fa fa-angle-right"></i></a></span> <span>{{ Blog.title }} <i
+                            class="fa fa-angle-right"></i></span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock header %}
+{% block body %}
+    {% load humanize %}
+
+    <section class="ftco-section ftco-degree-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 ftco-animate">
+                    <p class="mb-5">
+                        <img src="{{ Blog.image_url |default_if_none:'/static/img/900x300.png' }}" alt=""
+                             class="img-fluid">
+                    </p>
+                    <h2 class="mb-3">{{ Blog.title }}</h2>
+                    <div class="row">
+                        {{ Blog.content | safe }}
+                    </div>
+                    <div class="tag-widget post-tag-container mb-5 mt-5">
+                        <div class="tagcloud"><p style="color: black">Common tags:
+                            {% for tag in tag %}
+                                <a href="{% url 'tagged' tag.slug %}" class="tag-cloud-link">{{ tag }}</a>
+                            {% endfor %}</p>
+                        </div>
+                    </div>
+<h3 class="testimony-section mb-2">About The Author:</h3>
+                    <div class="about-author d-flex p-4 bg-light">
+                        <div class="bio mr-5">
+                            {% if user.profile.photo is None %}
+                                <img src="{{ Blog.user.profile.photo_url|default_if_none:'/static/img/img3.png' }}"
+                                     alt="Image placeholder" class="img-fluid mb-4">
+                            {% else %}
+                                <img src="{{ Blog.user.profile.photo_url|default_if_none:'/static/img/img3.png' }}"
+                                     alt="Image placeholder" class="img-fluid mb-4 w-auto h-auto">
+                            {% endif %}
+
+                        </div>
+                        <div class="desc">
+                            <h3>{{ Blog.user.username }}<span style="font-size: xx-small; float: right">( <strong>Joined:</strong> {{ user.date_joined.date }} )</span>
+                            </h3>
+                            <p>{{ Blog.user.profile.about }}</p>
+                        </div>
+                    </div>
+                    {#---------------------------COMMENTS----------------------------------#}
+                    <div class="pt-5 mt-5">
+                        <h3 class="mb-5">{{ comments.count }} Comments <span class="fa fa-comments"></span></h3>
+                        <ul class="comment-list">
+                            {% for comment in comments %}
+                                <li class="comment">
+                                    <div class="vcard bio">
+                                        <img src="{{ comment.user.profile.photo_url|default_if_none:'/static/img/img3.png' }}"
+                                             alt="Image placeholder">
+                                    </div>
+                                    <div class="comment-body">
+                                        {% if comment.user.is_superuser and comment.user.username == Blog.user.username %}
+                                            <h3>{{ comment.user.username | capfirst }} <span
+                                                    style=" size:auto; font-size: 16px" class="fa fa-comment"></span>
+                                                <span style="font-size: 55%; opacity: 0.5; background-color: lightsalmon"
+                                                      class="badge">Admin</span> <span
+                                                        style="font-size: 55%; opacity: 0.5; background-color: lightskyblue"
+                                                        class="badge">Author</span></h3>
+                                        {% elif comment.user.is_staff and comment.user.username == Blog.user.username %}
+                                            <h3>{{ comment.user.username | capfirst }} <span
+                                                    style=" size:auto; font-size: 16px" class="fa fa-comment"></span>
+                                                <span style="font-size: 55%; opacity: 0.5; background-color: skyblue"
+                                                      class="badge">Blue Member</span> <span
+                                                        style="font-size: 55%; opacity: 0.5; background-color: lightskyblue"
+                                                        class="badge">Author</span></h3>
+                                        {% elif comment.user.username == Blog.user.username %}
+                                            <h3>{{ comment.user.username | capfirst }} <span
+                                                    style=" size:auto; font-size: 16px" class="fa fa-comment"></span>
+                                                <<span style="font-size: 55%; opacity: 0.5; background-color: lightskyblue"
+                                                       class="badge">Author</span></h3>
+                                        {% elif comment.user.is_superuser %}
+                                            <h3>{{ comment.user.username | capfirst }} <span
+                                                    style=" size:auto; font-size: 16px" class="fa fa-comment"></span>
+                                                <span style="font-size: 55%; opacity: 0.5; background-color: lightsalmon"
+                                                      class="badge">Admin</span></h3>
+                                        {% elif comment.user.is_staff %}
+                                            <h3>{{ comment.user.username | capfirst }} <span
+                                                    style=" size:auto; font-size: 16px" class="fa fa-comment"></span>
+                                                <span style="font-size: 55%; opacity: 0.5; background-color: lightsteelblue"
+                                                      class="badge">Blue Member</span></h3>
+                                        {% else %}
+                                            <h3>{{ comment.user.username | capfirst }} <span
+                                                    style=" size:auto; font-size: 16px" class="fa fa-comment"></span>
+                                            </h3>
+                                        {% endif %}
+                                        <div class="meta mb-3">{{ comment.time }}</div>
+                                        <p>{{ comment.comment | linebreaks}}</p>
+                                        <p><a class="reply" data-toggle="collapse" href="#Reply{{ comment.sno }}"
+                                              role="button"
+                                              aria-expanded="false" aria-controls="Reply{{ comment.sno }}">Reply</a>
+                                        <span><a class="reply"  href="{% url 'comment_delete' comment.sno %}">
+                                            Delete
+                                        </a></span></p>
+
+                                    </div>
+                                    {% for reply in comment.replies.all %}
+                                        <ul class="children my-2" style="padding: 5px 0 0 100px;!important;">
+                                            <li class="comment" style="margin: 0 0 0 0;">
+                                                <div class="vcard bio">
+                                                    <img src="{{ reply.user.profile.photo_url|default_if_none:'/static/img/img3.png' }}"
+                                                         alt="Image placeholder">
+                                                </div>
+                                                <div class="comment-body">
+                                                    {% if reply.user.is_superuser and reply.user.username == Blog.user.username %}
+                                                        <h3>{{ reply.user.username | capfirst }} <span
+                                                                style=" size:auto; font-size: 16px"
+                                                                class="fa fa-reply"></span> <span
+                                                                style="font-size: 55%; opacity: 0.5; background-color: lightsalmon"
+                                                                class="badge">Admin</span> <span
+                                                                style="font-size: 55%; opacity: 0.5; background-color: lightskyblue"
+                                                                class="badge">Author</span></h3>
+                                                    {% elif reply.user.is_staff and reply.user.username == Blog.user.username %}
+                                                        <h3>{{ reply.user.username | capfirst }} <span
+                                                                style=" size:auto; font-size: 16px"
+                                                                class="fa fa-reply"></span> <span
+                                                                style="font-size: 55%; opacity: 0.5; background-color: skyblue"
+                                                                class="badge">Blue Member</span> <span
+                                                                style="font-size: 55%; opacity: 0.5; background-color: lightskyblue"
+                                                                class="badge">Author</span></h3>
+                                                    {% elif reply.user.username == Blog.user.username %}
+                                                        <h3>{{ reply.user.username | capfirst }} <span
+                                                                style=" size:auto; font-size: 16px"
+                                                                class="fa fa-reply"></span> <<span
+                                                                style="font-size: 55%; opacity: 0.5; background-color: lightskyblue"
+                                                                class="badge">Author</span></h3>
+                                                    {% elif reply.user.is_superuser %}
+                                                        <h3>{{ reply.user.username | capfirst }} <span
+                                                                style=" size:auto; font-size: 16px"
+                                                                class="fa fa-reply"></span> <span
+                                                                style="font-size: 55%; opacity: 0.5; background-color: lightsalmon"
+                                                                class="badge">Admin</span></h3>
+                                                    {% elif reply.user.is_staff %}
+                                                        <h3>{{ reply.user.username | capfirst }} <span
+                                                                style=" size:auto; font-size: 16px"
+                                                                class="fa fa-reply"></span> <span
+                                                                style="font-size: 55%; opacity: 0.5; background-color: lightsteelblue"
+                                                                class="badge">Blue Member</span></h3>
+                                                    {% else %}
+                                                        <h3>{{ reply.user.username | capfirst }} <span
+                                                                style=" size:auto; font-size: 16px"
+                                                                class="fa fa-reply"></span></h3>
+                                                    {% endif %}
+                                                    <div class="meta mb-3">{{ reply.time | naturaltime }}</div>
+                                                    <p>{{ reply.comment | linebreaks }}</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    {% endfor %}
+                                </li>
+                                {% if user.is_authenticated %}
+                                    <div class="form-group row collapse" style="padding: 5px 0 0 100px;!important;"
+                                         id="Reply{{ comment.sno }}">
+                                        <div class="card" style="margin-left: 60px;">
+                                            <h5 class="card-header">Reply to this comment:</h5>
+                                            <div class="card-body">
+                                                <form method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="parentSno" value="{{ comment.sno }}">
+                                                    {{ form | crispy }}
+                                                    <input type="submit" value="Reply" class="btn btn-primary">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <!-- END comment-list -->
+                        {% if user.is_authenticated %}
+                            <div class="card my-4">
+                                <h5 class="card-header">Leave a Comment:</h5>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="parentSno" value=" ">
+                                        {{ form | crispy }}
+                                        <input type="submit" value="Submit" class="btn btn-primary">
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="card my-4">
+                                <h5 class="card-header">Leave a Comment:</h5>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{ form | crispy }}
+                                        <input type="submit" value="Submit" class="btn btn-primary" disabled>
+                                        <a href="{% url 'login' %}?next={{ request.path }}" type="button" class="btn btn-primary mx-2" style="color: white;">
+                                            Login to comment
+                                        </a>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {#---------------------------------------------------------------#}
+                </div> <!-- .col-md-8 -->
+                <div class="col-lg-4 sidebar pl-lg-5 ftco-animate">
+                    <div class="sidebar-box">
+                        <form method="get" action="{% url 'search' %}"
+                              class="search-form form-inline d-flex justify-content-center md-form form-sm active-pink active-pink-2 mt-2">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            <input  class="form-control form-control-sm ml-3 w-75" type="search" placeholder="Find something" id="query"
+                                   name="query" aria-label="Search">
+                        </form>
+                    </div>
+                    <div class="sidebar-box ftco-animate">
+                        <div class="categories">
+                            <h3>Categories</h3>
+                            <ul>
+                                {% for foo in tags %}
+                                    <li><a href="/search/?query={{ foo }}">{{ foo | upper }} <span
+                                            style="font-size: 25px" class="fa fa-angle-right"></span></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-box ftco-animate">
+                        <h3>Recent Blogs</h3>
+                        {% for recent in index2 %}
+                            <div class="block-21 mb-4 d-flex">
+                                <a class="blog-img mr-4" style="background-image: url({{ recent.image_url }});"></a>
+                                <div class="text">
+                                    <h3 class="heading"><a
+                                            href="{% url 'posts' slug=recent.slug %}">{{ recent.title }}</a></h3>
+                                    <div class="meta">
+                                        <div><a href="{% url 'posts' slug=recent.slug %}"><span
+                                                class="fa fa-calendar"></span> {{ recent.time }}</a>
+                                        </div>
+                                        <div><a href="{% url 'posts' slug=recent.slug %}"><span
+                                                class="fa fa-user"></span> {{ recent.user.username }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if tag %}
+                        <div class="sidebar-box ftco-animate">
+                            <h3>Tag Cloud</h3>
+                            <div class="tagcloud">
+                                {% for tag in Blog.tags.all %}
+                                    <a href="{% url 'tagged' tag.slug %}" class="tag-cloud-link">{{ tag }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="sidebar-box ftco-animate">
+                        <h3>See Also</h3>
+                        {% for related in index3 %}
+                            <p><a href="{% url 'posts' slug=related.slug %}">{{ related.title }}</a></p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section> <!-- .section -->
+    <!-- .section -->
+
+{% endblock %}

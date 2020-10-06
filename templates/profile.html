@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block title %}BlueBlog | Profile{% endblock title %}
+{% block header %}
+    <div class="hero-wrap js-fullheight" style="background-image: url('{{ user.profile.photo_url }}');"
+         data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start"
+             data-scrollax-parent="true">
+            <div class="col-md-12 ftco-animate">
+                <h2 class="subheading">Hello! </h2>
+                <h1 class="display-1">{{ user.username }}</h1>
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="text mt-3">
+                            <p>Thankyou {{ user.username }}, We're glad that you're the part of our team.</p>
+                            <p>Here you can improve/edit your profile</p>
+                            <div class="mouse">
+                                <a href="#" class="mouse-icon">
+                                    <div class="mouse-wheel"><span class="fa fa-arrow-down"></span></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock header %}
+{% block body %}
+    <div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                        {% if user.profile.photo %}
+                            <img class="img-fluid-sm mt-5"
+                                 src="{{ user.profile.photo.url|default_if_none:'/static/img/img3.png' }}"
+                                 alt="profpic">
+                        {% else %}
+                            <img class="img-fluid mt-5" src="/static/img/img3.png" alt="profpic">
+                        {% endif %}
+                        <span class="font-weight-bold">{{ user.profile.username }}</span>
+                        <span class="text-black-50">{{ user.first_name | capfirst }} {{ user.last_name | capfirst }}</span><span> </span>
+                        <a href="{% url 'password_change' %}" class="font-weight-bold">Change Password?</a>
+                    </div>
+                </div>
+    <div class="col-md-7 border-right">
+    <form class="form-group" action="." method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12">
+            {{ user_form.username | as_crispy_field }}
+            </div>
+            <div class="col-6">
+                {{ user_form.first_name | as_crispy_field }}
+            </div>
+            <div class="col-6">
+                {{ user_form.last_name | as_crispy_field }}
+            </div>
+            <div class="col-6">
+                {{ user_form.email | as_crispy_field }}
+            </div>
+            <div class="col-6">
+                {{ profile_form.dob | as_crispy_field }}
+            </div>
+            {{ profile_form.errors }}
+            {{ user_form.errors }}
+        </div>
+        {{ profile_form.about | as_crispy_field }}
+        {{ profile_form.photo | as_crispy_field }}
+        <cite>Make sure that the size of photo is similar to the passport one</cite><br>
+        <input type="submit" value="Save changes" class="btn btn-light mt-3" style="color: blueviolet;">
+    </form>
+</div>
+    </div>
+    </div>
+{% endblock body %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}BlueBlog | Search{% endblock title %}
+{% block header %}
+    <div class="hero-wrap js-fullheight" style="background-image: url('/static/img/nature.jpg');"
+         data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start"
+             data-scrollax-parent="true">
+            <div class="col-md-12 ftco-animate">
+                <h1 class="mb-4 mb-md-0" style="font-size: 450%">Search Results</h1>
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="text">
+                            <div class="mouse">
+                                <a href="#" class="mouse-icon">
+                                    <div class="mouse-wheel"><span class="fa fa-arrow-down"></span></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock header %}
+{% block body %}
+
+    <div class="container">
+        <div class="row mt-5 justify-content-center">
+
+            <!-- Blog Entries Column -->
+            <div class="col-md-8" style="align-content:space-evenly;">
+                <h1 class="my-4">Search results related to <strong style="font-style: italic;">{{ query }}</strong> :
+                </h1>
+
+                <!-- Blog Post -->
+                {% if QueryPosts|length < 1 %}
+                    <p>Your search - <strong>{{ query }}</strong> - did not match any posts.</p>
+
+                    <p>Suggestions:</p>
+                    <ul>
+                        <li> Make sure that all words are spelled correctly.</li>
+                        <li>Try different keywords.</li>
+                        <li>Try more general keywords.</li>
+                        <li>Try fewer words.</li>
+                    </ul>
+                {% endif %}
+                {% for Blog in QueryPosts %}
+                    <div class="card mb-4">
+                        <img class="card-img-top" src="/media/{{ Blog.image }}" alt="Card image cap">
+                        <div class="card-body">
+                            <h2 class="card-title"><a class="text-dark"
+                                                      href="/posts/{{ Blog.slug }}">{{ Blog.title }}</a></h2>
+                            <p class="card-text">{{ Blog.content | slice:245 | safe }}...</p>
+                            <a href="/posts/{{ Blog.slug }}" class="btn btn-primary">Read More &rarr;</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            {{ Blog.time }} by
+                            <a href="#">{{ Blog.username }}</a>
+                            <a href="#" class="green-text float-right" style="text-decoration: none;">
+                                <p class="h6 pb-1"><i class="fa fa-{{ Blog.excerpt_type.excerpt}} pr-1"></i> {{Blog.tag | capfirst}}</p></a>
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+
+
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+
+
+
+
+
+
+{% endblock body %}

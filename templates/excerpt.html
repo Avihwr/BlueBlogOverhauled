@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% block title %}BlueBlog | Upload{% endblock title %}
+{% block header %}
+    <div class="hero-wrap js-fullheight" style="background-image: url('/static/img/nature.jpg');"
+         data-stellar-background-ratio="0.5" xmlns="http://www.w3.org/1999/html">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start"
+             data-scrollax-parent="true">
+            <div class="col-md-12 ftco-animate">
+                <h2 class="subheading">Excerpts From Font Awesome 5.0 Only</h2>
+                <h1 class="mb-4 mb-md-0" style="font-size: 450%">You Can Contribute Excerpts Here</h1>
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="text">
+                            <div class="mouse">
+                                <a href="#" class="mouse-icon">
+                                    <div class="mouse-wheel"><span class="fa fa-angle-down"></span></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock header %}
+{% block body %}
+    <h5 class="float-center" style="margin-left: 500px; margin-top: 20px; margin-bottom: 20px; margin-right: 500px;" ><strong>Note:</strong> Add Excerpts or Tags related to<a href="https://fontawesome.com/icons?d=gallery"> <strong style="color: blue">Font Awesome v5.0</strong></a> only</h5>
+    <form action="." method="post" style="margin-left: 500px; margin-top: 20px; margin-bottom: 20px; margin-right: 500px;" >
+    {% csrf_token %}
+        {{ tag_form.errors }}
+    {{ tag_form | crispy }}
+    <input type="submit" value="Upload this tag?" class="btn" style="color: blueviolet;">
+    </form>
+
+{% endblock body %}
