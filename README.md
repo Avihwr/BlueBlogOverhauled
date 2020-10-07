@@ -24,7 +24,7 @@ Completely Overhauled the looks of my previous project BlueBlog and Changed data
 * You can use excerpts or tags for the post
 * Add your excerpts and tags
 * Fully responsive
-
+and a lot more
 
 # Want to use it in your machine?
 
