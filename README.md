@@ -1,6 +1,9 @@
 # BlueBlogOverhauled
 Completely Overhauled the looks of my previous project BlueBlog and Changed database to MySql.
 
+# Try Yourself( Not Fully Responsive Yet )
+http://blueblog1.pythonanywhere.com/
+
 # Features
 * User Registration
 * User Login & Logout
