@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load urlencode %}
 {% block title %}BlueBlog | Home{% endblock title %}
 {% block homeactive %}active{% endblock homeactive %}
 {% block header %}
@@ -47,13 +48,14 @@
                                         <h2><a href="/posts/{{ Big.slug }}">{{ Big.title }}</a>
                                         </h2>
                                         <ul class="media-social list-unstyled">
-                                            <li class="ftco-animate"><a href="#"><span><i class="fa fa-twitter" aria-hidden="true"></i></span></a>
+                                            <li class="ftco-animate"><a href="http://twitter.com/share?text={{ Big.title}}&url={{ request.build_absolute_uri}}&hashtags={% for tag in Big.tags.all %}{{ tag }},{% endfor %}"><span><i class="fa fa-twitter" aria-hidden="true"></i></span></a>
                                             </li>
-                                            <li class="ftco-animate"><a href="#"><span><i class="fa fa-facebook" aria-hidden="true"></i></span></a>
+                                            <li class="ftco-animate"><a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri}}"><span><i class="fa fa-facebook" aria-hidden="true"></i></span></a>
                                             </li>
-                                            <li class="ftco-animate"><a href="#"><span><i class="fa fa-instagram" aria-hidden="true"></i></span></a>
+                                            <li class="ftco-animate"><a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri}}&title={{ Big.title | encode }}"><span><i class="fa fa-reddit-alien" aria-hidden="true"></i></span></a>
                                             </li>
                                         </ul>
+                                        {{ share }}
                                         <div class="meta">
                                             {#                                        <p class="font-weight-normal">{{ Big.content | slice:250 | safe}}...</p>#}
                                             <p class="mb-0"><a href="#">by<strong> {{ Big.user.username }}</strong></a> | <a

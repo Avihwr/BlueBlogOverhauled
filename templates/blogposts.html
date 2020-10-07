@@ -109,9 +109,11 @@
                                         <p><a class="reply" data-toggle="collapse" href="#Reply{{ comment.sno }}"
                                               role="button"
                                               aria-expanded="false" aria-controls="Reply{{ comment.sno }}">Reply</a>
+                                            {% if reply.user.username == user.username %}
                                         <span><a class="reply"  href="{% url 'comment_delete' comment.sno %}">
                                             Delete
                                         </a></span></p>
+                                    {% endif %}
 
                                     </div>
                                     {% for reply in comment.replies.all %}
@@ -163,6 +165,11 @@
                                                     {% endif %}
                                                     <div class="meta mb-3">{{ reply.time | naturaltime }}</div>
                                                     <p>{{ reply.comment | linebreaks }}</p>
+                                                {% if reply.user.username == user.username %}
+                                                <p><a class="reply"  href="{% url 'reply_delete' comment.sno comment.sno %}">
+                                            Delete
+                                        </a></p>
+                                                {% endif %}
                                                 </div>
                                             </li>
                                         </ul>

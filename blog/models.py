@@ -110,7 +110,7 @@ class BlogComment(models.Model):
     time = models.DateTimeField(default=now)
 
     class Meta:
-        ordering = ['-time']
+        ordering = ['time']
 
     def __str__(self):
         return self.comment[0:12] + '... ' + " by " + self.user.username
