@@ -11,11 +11,12 @@ Completely Overhauled the looks of my previous project BlueBlog and Changed data
 * User can delete his own comment or reply
 * Added permissions to the pages
 * Now using Google-maps api in contact page
-* Now admin will recieve mail on his gmail account if some submitted a contact form or not
+* Now admin will recieve mail on his gmail account when someone submitted a contact form
 * User Profile
-* User can will redirect to previous page after login 
+* User will redirect to previous page after login 
 * Fully featured RichTextEditor included
 * Give feedback
+* Only verified users can post or delete
 * Add your images to your profile
 * Create, Update, Edit & Delete Posts
 * Search
