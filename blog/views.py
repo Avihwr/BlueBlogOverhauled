@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponseRedirect, reverse, get_object_or_404, HttpResponse
 from django.core.paginator import Paginator
+from django.db.models import Q
 from blog.models import Blog, Contact, BlogComment, Profile, Excerpt
 from django.contrib import messages
 from django.template.defaultfilters import slugify
@@ -121,6 +122,14 @@ def comment_delete(request, sno):
     return redirect('posts', slug=comment.post.slug)
 
 
+@login_required(login_url="/login/")
+def reply_delete(request, sno, parent_id):
+    comment = get_object_or_404(BlogComment, sno=sno)
+    x = comment.replies.filter(parent_id=parent_id).order_by('-replies__time').first()
+    x.delete()
+    return redirect('posts', slug=comment.post.slug)
+
+
 @permission_required('blog.change_blog', raise_exception=True)
 @login_required(login_url="/login/")
 def post_edit(request, pk):
@@ -154,12 +163,13 @@ def posts(request, slug):
         index1 = Blog.objects.all().order_by('-time')[0]
         index2 = Blog.objects.all().order_by('-time')[0:5]
         index3 = list(set(Blog.objects.all().order_by('-tags')))[0:6]
-        lst = Blog.objects.all().distinct()[0:5]
+        lst = Blog.objects.all().filter('-time')
         tag = []
         for dist in lst:
             if dist.context not in tag:
+                print(dist)
                 tag.append(dist.context)
-        # print(tag)
+        print(tag)
         common_tags = Blog.tags.most_common()[:4]
         post = Blog.objects.filter(slug=slug).first()
         post.views = post.views + 1
@@ -175,6 +185,13 @@ def posts(request, slug):
                 if parentSno == " ":
                     ins = BlogComment.objects.create(post=post, user=user, comment=comment)
                     ins.save()
+                    send_mail(
+                        'Someone commented on your post -> ' + ins.post.title,
+                        ins.user.username + ' said ' + comment,
+                        ins.user.email,
+                        ['avihwr@gmail.com', ins.post.user.email],
+                        fail_silently=False,
+                    )
                 else:
                     parent = BlogComment.objects.get(sno=parentSno)
                     ins = BlogComment.objects.create(post=post, user=user, comment=comment, parent=parent)
@@ -184,7 +201,7 @@ def posts(request, slug):
                 return HttpResponseRedirect(post.get_absolute_url())
         else:
             comment_form = CommentForm()
-        context = {'tag': common_tags, 'tags': tag, 'Blog': post, 'comments': comments, 'user': user,
+        context = {'tag': common_tags, 'tags': tag[0:5], 'Blog': post, 'comments': comments, 'user': user,
                    'form': comment_form,
                    'index1': index1,
                    'index2': index2, 'index3': index3}
@@ -257,6 +274,20 @@ def tagged(request, slug):
     return render(request, 'bloghome.html', context)
 
 
+def Category(request, category):
+    index1 = Blog.objects.all().order_by('-time').first()
+    category = Blog.objects.filter(context__icontains=category).order_by('-time')
+    print(category)
+    # Filter posts by tag name
+    # blogs = Blog.objects.filter(context=category.all()).first()
+    context = {
+        'tag': category,
+        'page': category,
+        'index1': index1
+    }
+    return render(request, 'bloghome.html', context)
+
+
 @login_required(login_url="/login/")
 def profile_edit(request):
     index1 = Blog.objects.all().order_by('-time')[0]
@@ -287,15 +318,14 @@ def search(request):
     if len(query) > 80:
         queryposts = Blog.objects.none()
     else:
-        querypostsTitle = Blog.objects.filter(title__icontains=query)
-        querypostsContent = Blog.objects.filter(content__icontains=query)
+        querypostsTitle = Blog.objects.filter(Q(title__icontains=query))
+        querypostsContent = Blog.objects.filter(Q(content__icontains=query))
         # querypostsTC = querypostsTitle.union(querypostsContent) #Cannot use nested unions with Mysql DB
-        querypostsAuthor = Blog.objects.filter(user__username__icontains=query)
-        querypostsExcerpt = Blog.objects.filter(excerpt_type__excerpt__icontains=query)
-        querypostsContext = Blog.objects.filter(context__icontains=query)
+        querypostsAuthor = Blog.objects.filter(Q(user__username__icontains=query))
+        querypostsExcerpt = Blog.objects.filter(Q(excerpt_type__excerpt__icontains=query))
+        querypostsContext = Blog.objects.filter(Q(context__icontains=query))
         # queryposts1 = querypostsAuthor.union(querypostsTC) #Cannot use nested unions with Mysql DB
-        queryposts = querypostsTitle.union(querypostsExcerpt).union(querypostsContent).union(querypostsAuthor).union(
-            querypostsContext)
+        queryposts = querypostsTitle | querypostsExcerpt | querypostsContent | querypostsAuthor | querypostsContext
 
     if queryposts.count() == 0:
         messages.warning(request, "No Search Results Found. Please Refine Your Query")

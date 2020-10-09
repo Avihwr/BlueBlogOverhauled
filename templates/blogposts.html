@@ -54,7 +54,7 @@
 
                         </div>
                         <div class="desc">
-                            <h3>{{ Blog.user.username }}<span style="font-size: xx-small; float: right">( <strong>Joined:</strong> {{ user.date_joined.date }} )</span>
+                            <h3>{{ Blog.user.username }}<span style="font-size: xx-small; float: right">( <strong>Joined:</strong> {{ Blog.user.date_joined.date }} )</span>
                             </h3>
                             <p>{{ Blog.user.profile.about }}</p>
                         </div>
@@ -109,7 +109,7 @@
                                         <p><a class="reply" data-toggle="collapse" href="#Reply{{ comment.sno }}"
                                               role="button"
                                               aria-expanded="false" aria-controls="Reply{{ comment.sno }}">Reply</a>
-                                            {% if reply.user.username == user.username %}
+                                            {% if comment.user.username == user.username %}
                                         <span><a class="reply"  href="{% url 'comment_delete' comment.sno %}">
                                             Delete
                                         </a></span></p>
@@ -238,7 +238,7 @@
                             <h3>Categories</h3>
                             <ul>
                                 {% for foo in tags %}
-                                    <li><a href="/search/?query={{ foo }}">{{ foo | upper }} <span
+                                    <li><a href="{% url 'category' foo %}">{{ foo | upper }} <span
                                             style="font-size: 25px" class="fa fa-angle-right"></span></a></li>
                                 {% endfor %}
                             </ul>

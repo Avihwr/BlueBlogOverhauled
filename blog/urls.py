@@ -35,8 +35,10 @@ urlpatterns = [
     path('post_list', views.posts_list, name='post_list'),
     path('post_delete/<str:slug>', views.post_delete, name='post_delete'),
     path('comment_delete/<int:sno>', views.comment_delete, name='comment_delete'),
+    path('reply_delete/<int:sno>/<int:parent_id>', views.reply_delete, name='reply_delete'),
     path('excerpt/', views.excerpt, name='excerpt'),
     path('tag/<str:slug>', views.tagged, name='tagged'),
+    path('category/<str:category>', views.Category, name='category'),
     path('posts/', views.posts_redirect, name='posts_redirect'),
     path('post_edit/', views.posts_edit_redirect, name='posts_edit_redirect'),
 
