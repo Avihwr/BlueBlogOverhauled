@@ -82,7 +82,7 @@ def post_upload(request):
             messages.success(request, 'Your Post has been successfully posted')
             print(request.POST)
             print(tags)
-            return HttpResponseRedirect(reverse('post_upload'))
+            return redirect('posts', slug=ins.slug)
         else:
             print(f'error in {request.POST}')
     else:
@@ -163,7 +163,7 @@ def posts(request, slug):
         index1 = Blog.objects.all().order_by('-time')[0]
         index2 = Blog.objects.all().order_by('-time')[0:5]
         index3 = list(set(Blog.objects.all().order_by('-tags')))[0:6]
-        lst = Blog.objects.all().filter('-time')
+        lst = Blog.objects.all().order_by('-time')
         tag = []
         for dist in lst:
             if dist.context not in tag:
