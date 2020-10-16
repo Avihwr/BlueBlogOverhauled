@@ -41,7 +41,7 @@
                             {% endfor %}</p>
                         </div>
                     </div>
-                    <h3 class="testimony-section mb-2">About The Author:</h3>
+<h3 class="testimony-section mb-2">About The Author:</h3>
                     <div class="about-author d-flex p-4 bg-light">
                         <div class="bio mr-5">
                             {% if user.profile.photo is None %}
@@ -105,15 +105,15 @@
                                             </h3>
                                         {% endif %}
                                         <div class="meta mb-3">{{ comment.time }}</div>
-                                        <p>{{ comment.comment | linebreaks }}</p>
+                                        <p>{{ comment.comment | linebreaks}}</p>
                                         <p><a class="reply" data-toggle="collapse" href="#Reply{{ comment.sno }}"
                                               role="button"
                                               aria-expanded="false" aria-controls="Reply{{ comment.sno }}">Reply</a>
                                             {% if comment.user.username == user.username %}
-                                                <span><a class="reply" href="{% url 'comment_delete' comment.sno %}">
+                                        <span><a class="reply"  href="{% url 'comment_delete' comment.sno %}">
                                             Delete
                                         </a></span></p>
-                                            {% endif %}
+                                    {% endif %}
 
                                     </div>
                                     {% for reply in comment.replies.all %}
@@ -165,12 +165,11 @@
                                                     {% endif %}
                                                     <div class="meta mb-3">{{ reply.time | naturaltime }}</div>
                                                     <p>{{ reply.comment | linebreaks }}</p>
-                                                    {% if reply.user.username == user.username %}
-                                                        <p><a class="reply"
-                                                              href="{% url 'reply_delete' comment.sno comment.sno %}">
-                                                            Delete
-                                                        </a></p>
-                                                    {% endif %}
+                                                {% if reply.user.username == user.username %}
+                                                <p><a class="reply"  href="{% url 'reply_delete' comment.sno comment.sno %}">
+                                            Delete
+                                        </a></p>
+                                                {% endif %}
                                                 </div>
                                             </li>
                                         </ul>
@@ -215,8 +214,7 @@
                                         {% csrf_token %}
                                         {{ form | crispy }}
                                         <input type="submit" value="Submit" class="btn btn-primary" disabled>
-                                        <a href="{% url 'login' %}?next={{ request.path }}" type="button"
-                                           class="btn btn-primary mx-2" style="color: white;">
+                                        <a href="{% url 'login' %}?next={{ request.path }}" type="button" class="btn btn-primary mx-2" style="color: white;">
                                             Login to comment
                                         </a>
                                     </form>
@@ -231,8 +229,7 @@
                         <form method="get" action="{% url 'search' %}"
                               class="search-form form-inline d-flex justify-content-center md-form form-sm active-pink active-pink-2 mt-2">
                             <i class="fa fa-search" aria-hidden="true"></i>
-                            <input class="form-control form-control-sm ml-3 w-75" type="search"
-                                   placeholder="Find something" id="query"
+                            <input  class="form-control form-control-sm ml-3 w-75" type="search" placeholder="Find something" id="query"
                                    name="query" aria-label="Search">
                         </form>
                     </div>
@@ -240,11 +237,9 @@
                         <div class="categories">
                             <h3>Categories</h3>
                             <ul>
-                                {% for foo,fo in tags %}
-
-
-                                    <li><span style="display: inline-flex "><a class="blog-img mr-4"><i class="fa fa-{{ fo }}"></i></a><a href="{% url 'category' foo %}">{{ foo | upper }} <span
-                                            style="font-size: 25px" class="fa fa-angle-right"></span></a></span></li>
+                                {% for foo in tags %}
+                                    <li><a href="{% url 'category' foo %}">{{ foo | upper }} <span
+                                            style="font-size: 25px" class="fa fa-angle-right"></span></a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -263,27 +258,6 @@
                                                 class="fa fa-calendar"></span> {{ recent.time }}</a>
                                         </div>
                                         <div><a href="{% url 'posts' slug=recent.slug %}"><span
-                                                class="fa fa-user"></span> {{ recent.user.username }}</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="sidebar-box ftco-animate">
-                        <h3>Recent Comments</h3>
-                        {% for recent in index4 %}
-                            <div class="block-21 mb-4 d-flex">
-                                <a class="blog-img mr-4 img-thumbnail"
-                                   style="background-image: url({{ recent.user.profile.photo_url }});"></a>
-                                <div class="text">
-                                    <h3 class="heading"><a
-                                            href="{% url 'posts' slug=recent.post.slug %}">{{ recent.comment }}</a></h3>
-                                    <div class="meta">
-                                        <div><a href="{% url 'posts' slug=recent.post.slug %}"><span
-                                                class="fa fa-calendar"></span> {{ recent.time }}</a>
-                                        </div>
-                                        <div><a href="{% url 'posts' slug=recent.post.slug %}"><span
                                                 class="fa fa-user"></span> {{ recent.user.username }}</a>
                                         </div>
                                     </div>

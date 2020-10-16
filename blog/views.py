@@ -163,17 +163,13 @@ def posts(request, slug):
         index1 = Blog.objects.all().order_by('-time')[0]
         index2 = Blog.objects.all().order_by('-time')[0:5]
         index3 = list(set(Blog.objects.all().order_by('-tags')))[0:6]
-        index4 = list(set(BlogComment.objects.all().order_by('-time')))[0:6]
         lst = Blog.objects.all().order_by('-time')
         tag = []
-        tagi = []
         for dist in lst:
             if dist.context not in tag:
                 print(dist)
                 tag.append(dist.context)
-            if dist.excerpt_type.excerpt not in tagi:
-                tagi.append(dist.excerpt_type.excerpt)
-        tags = zip(tag, tagi)
+        print(tag)
         common_tags = Blog.tags.most_common()[:4]
         post = Blog.objects.filter(slug=slug).first()
         post.views = post.views + 1
@@ -205,12 +201,10 @@ def posts(request, slug):
                 return HttpResponseRedirect(post.get_absolute_url())
         else:
             comment_form = CommentForm()
-        context = {'tag': common_tags, 'tags': tags, 'Blog': post, 'comments': comments, 'user': user,
+        context = {'tag': common_tags, 'tags': tag[0:5], 'Blog': post, 'comments': comments, 'user': user,
                    'form': comment_form,
                    'index1': index1,
-                   'index2': index2,
-                   'index3': index3,
-                   'index4': index4[0:4]}
+                   'index2': index2, 'index3': index3}
         return render(request, 'blogposts.html', context)
     except AttributeError:
         return HttpResponse('<h1 style="font-family:Poppins, sans-serif;">Wrong slug matched<h1>'
